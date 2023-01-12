@@ -6,6 +6,7 @@ pub struct SandboxDetector {
     detect_debug: bool,
     detect_vmware: bool,
     detect_hyperv: bool,
+    detect_vbox: bool,
     detect_qemu: bool,
     detect_common_vms: bool,
 }
@@ -16,6 +17,7 @@ impl Default for SandboxDetector {
             detect_debug: true,
             detect_vmware: true,
             detect_hyperv: true,
+            detect_vbox: true,
             detect_qemu: true,
             detect_common_vms: true,
         }
@@ -33,8 +35,9 @@ impl SandboxDetector {
             flag |= vmtest::check_vmware();
         }
         if self.detect_hyperv {
-            todo!();
-            // flag |= todo!();
+        }
+        if self.detect_vbox {
+            flag |= vmtest::check_vbox();
         }
         if self.detect_qemu {
             flag |= vmtest::check_qemu();

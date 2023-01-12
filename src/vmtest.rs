@@ -31,6 +31,21 @@ pub fn check_qemu() -> bool {
     flag
 }
 
+#[cfg(windows)]
+pub fn check_hyperv() -> bool {
+    todo!();
+}
+
+#[cfg(windows)]
+pub fn check_vbox() -> bool {
+    let mut flag = false;
+
+    flag |= check_vbox_hkeys();
+    flag |= check_vbox_regkey();
+
+    flag
+}
+
 fn check_vmwaretools_regkey() -> bool {
     use winapi::um::winreg::HKEY_LOCAL_MACHINE;
 
@@ -80,6 +95,63 @@ fn check_qemu_hkeys() -> bool {
         "QEMU",
     )
     .unwrap_or(false);
+
+    flag
+}
+
+fn check_vbox_regkey() -> bool {
+    use winapi::um::winreg::HKEY_LOCAL_MACHINE;
+
+    let mut flag = false;
+
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "HARDWARE\\ACPI\\DSDT\\VBOX__");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "HARDWARE\\ACPI\\FADT\\VBOX__");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "HARDWARE\\ACPI\\RSDT\\VBOX__");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "SOFTWARE\\Oracle\\VirtualBox Guest Additions");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "SYSTEM\\ControlSet001\\Services\\VBoxGuest");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "SYSTEM\\ControlSet001\\Services\\VBoxMouse");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "SYSTEM\\ControlSet001\\Services\\VBoxService");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "SYSTEM\\ControlSet001\\Services\\VBoxSF");
+    flag |= crate::tools::regkey_exists(HKEY_LOCAL_MACHINE, "SYSTEM\\ControlSet001\\Services\\VBoxVideo");
+
+    flag
+}
+
+fn check_vbox_hkeys() -> bool {
+    use crate::tools::regkey_value_contains;
+    use winapi::um::winreg::HKEY_LOCAL_MACHINE;
+
+    let mut flag = false;
+
+    flag |= regkey_value_contains(
+        HKEY_LOCAL_MACHINE,
+        "HARDWARE\\DEVICEMAP\\Scsi\\Scsi Port 0\\Scsi Bus 0\\Target Id 0\\Logical Unit Id 0",
+        "Identifier",
+        "VBOX",
+    )
+    .unwrap_or(false);
+    flag |= regkey_value_contains(
+        HKEY_LOCAL_MACHINE,
+        "HARDWARE\\Description\\System",
+        "SystemBiosVersion",
+        "VBOX",
+    )
+    .unwrap_or(false);
+    flag |= regkey_value_contains(
+        HKEY_LOCAL_MACHINE,
+        "HARDWARE\\Description\\System",
+        "SystemBiosVersion",
+        "VIRTUALBOX",
+    )
+    .unwrap_or(false);
+    flag |= regkey_value_contains(
+        HKEY_LOCAL_MACHINE,
+        "HARDWARE\\Description\\System",
+        "SystemBiosDate",
+        "06/23/99",
+    )
+    .unwrap_or(false);
+
 
     flag
 }
