@@ -35,6 +35,7 @@ impl SandboxDetector {
             flag |= vmtest::check_vmware();
         }
         if self.detect_hyperv {
+            flag |= vmtest::check_hyperv();
         }
         if self.detect_vbox {
             flag |= vmtest::check_vbox();

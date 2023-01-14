@@ -126,6 +126,13 @@ pub fn regkey_value_contains(
     }
 }
 
+pub fn get_cpu_vendor() -> String {
+    use raw_cpuid::CpuId;
+    let cpuid = CpuId::new();
+
+    cpuid.get_vendor_info().expect("msg").to_string()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

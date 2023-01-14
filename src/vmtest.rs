@@ -1,3 +1,5 @@
+use crate::tools;
+
 const DISK_SIZE_MIN: u32 = 60; // GB
 
 #[cfg(windows)]
@@ -33,7 +35,11 @@ pub fn check_qemu() -> bool {
 
 #[cfg(windows)]
 pub fn check_hyperv() -> bool {
-    todo!();
+    let mut flag = false;
+
+    flag |= check_hyperv_cpu_vendor();
+
+    flag
 }
 
 #[cfg(windows)]
@@ -227,6 +233,10 @@ fn check_native_vhd_boot() -> bool {
 
         is_native
     }
+}
+
+fn check_hyperv_cpu_vendor() -> bool {
+    tools::get_cpu_vendor() == "Microsoft Hv"
 }
 
 #[cfg(test)]

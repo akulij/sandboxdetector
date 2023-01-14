@@ -7,3 +7,4 @@ edition = "2021"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.*", features = ["debugapi", "errhandlingapi", "fileapi", "sysinfoapi", "synchapi", "libloaderapi", "minwindef", "processthreadsapi", "winreg", "winerror"] }
+raw-cpuid = "10.6.0"
